@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+    command: sh -c 'until nc -z db 5432; do sleep 1; done; npm start'
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: banco_dados
+      POSTGRES_USER: usuario
+      POSTGRES_PASSWORD: senha123
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data:/var/lib/postgresql/data
+      - ./mock.sql:/docker-entrypoint-initdb.d/mock.sql
